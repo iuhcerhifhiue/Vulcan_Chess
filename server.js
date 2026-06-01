@@ -9,6 +9,7 @@ import * as admin from 'firebase-admin';
 import chessComRoutes from './routes/chessCom.js';
 import patternRoutes from './routes/patterns.js';
 import lessonsRoutes from './routes/lessons.js';
+import gameAnalysisRoutes from './routes/gameAnalysis.js';
 
 dotenv.config();
 
@@ -40,6 +41,7 @@ if (process.env.FIREBASE_PROJECT_ID) {
 app.use('/api/chess-com', chessComRoutes);
 app.use('/api/patterns', patternRoutes);
 app.use('/api/lessons', lessonsRoutes);
+app.use('/api/analysis', gameAnalysisRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
