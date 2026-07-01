@@ -1,0 +1,69 @@
+import express, { Application, Request, Response, NextFunction } from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import path from 'path';
+import * as admin from 'firebase-admin';
+
+// Routes
+import chessComRoutes from './routes/chessCom.js'; // Will be .ts later
+import patternRoutes from './routes/patterns.js'; // Will be .ts later
+import lessonsRoutes from './routes/lessons.js'; // Will be .ts later
+import gameAnalysisRoutes from './routes/gameAnalysis.js'; // Will be .ts later
+
+dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const app: Application = express();
+const PORT = process.env.PORT || 5000;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Initialize Firebase Admin
+if (process.env.FIREBASE_PROJECT_ID) {
+  try {
+    admin.initializeApp({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    });
+    console.log('Firebase initialized');
+  } catch (error) {
+    console.error('Firebase not configured - running in demo mode. Error:', (error as Error).message);
+  }
+}
+
+// Routes
+app.use('/api/chess-com', chessComRoutes);
+app.use('/api/patterns', patternRoutes);
+app.use('/api/lessons', lessonsRoutes);
+app.use('/api/analysis', gameAnalysisRoutes);
+
+// Health check
+app.get('/api/health', (req: Request, res: Response) => {
+  res.json({ status: 'ok' });
+});
+
+// Serve static files from frontend
+app.use(express.static(path.join(__dirname, '../dist')));
+
+// SPA fallback
+app.get('*', (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, '../dist', 'index.html'));
+});
+
+// Basic error handling middleware (can be expanded)
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
+
+export default app;
