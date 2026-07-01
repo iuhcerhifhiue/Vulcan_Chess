@@ -6,10 +6,10 @@ import path from 'path';
 import * as admin from 'firebase-admin';
 
 // Routes
-import chessComRoutes from './routes/chessCom.js'; // Updated to .js for runtime, will be .ts for build
-import patternRoutes from './routes/patterns.js'; // Updated to .js for runtime, will be .ts for build
-import lessonsRoutes from './routes/lessons.js'; // Updated to .js for runtime, will be .ts for build
-import gameAnalysisRoutes from './routes/gameAnalysis.js'; // Updated to .js for runtime, will be .ts for build
+import chessComRoutes from './routes/chessCom.ts';
+import patternRoutes from './routes/patterns.ts';
+import lessonsRoutes from './routes/lessons.ts';
+import gameAnalysisRoutes from './routes/gameAnalysis.ts';
 
 dotenv.config();
 
