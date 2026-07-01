@@ -1,49 +1,8 @@
 import express, { Request, Response, Router } from 'express';
-// import { analyzeGameHistory } from '../utils/patternAnalyzer.js'; // Will be .ts later
-// import { getOrCreateUserProfile } from '../utils/database.js'; // Will be .ts later
+import { analyzeGameHistory, Game, Pattern } from '../utils/patternAnalyzer'; // Updated import
+import { getOrCreateUserProfile, UserProfile } from '../utils/database'; // Updated import
 
 const router: Router = express.Router();
-
-interface Game {
-  // Define game structure based on what Chess.com API returns
-  // and what analyzeGameHistory expects
-  pgn: string;
-  url: string;
-  // ... other game properties
-}
-
-interface Pattern {
-  type: string;
-  description: string;
-  frequency: number;
-  // ... other pattern properties
-}
-
-interface UserProfile {
-  username: string;
-  patterns: Pattern[];
-  // ... other user profile properties
-}
-
-// Mock implementations for now until utils are converted to TypeScript
-async function analyzeGameHistory(games: Game[]): Promise<Pattern[]> {
-  console.warn('[Patterns Route] Mocking analyzeGameHistory.');
-  // Simulate analysis and return some mock patterns
-  return [
-    { type: 'missed_tactics', description: 'Missing simple forks', frequency: 5 },
-    { type: 'blunders', description: 'Hanging pieces in opening', frequency: 3 },
-  ];
-}
-
-async function getOrCreateUserProfile(username: string, patterns?: Pattern[]): Promise<UserProfile> {
-  console.warn('[Patterns Route] Mocking getOrCreateUserProfile.');
-  // Simulate fetching or creating a user profile
-  return {
-    username: username,
-    patterns: patterns || [],
-    // ... mock other properties
-  };
-}
 
 // Analyze user's game history and detect patterns
 router.post('/analyze', async (req: Request, res: Response) => {
@@ -57,7 +16,7 @@ router.post('/analyze', async (req: Request, res: Response) => {
     // Analyze patterns
     const patterns: Pattern[] = await analyzeGameHistory(games);
     
-    // Save user profile and patterns (mocked for now)
+    // Save user profile and patterns
     await getOrCreateUserProfile(username, patterns);
     
     res.json({
